@@ -4,8 +4,9 @@ from threading import Thread
 from datetime import datetime
 
 class Displaytime(Thread):
-    def __init__(self, lcd):
+    def __init__(self, lcd, alarm):
         self.lcd = lcd
+        self.alarm = alarm
         self.current_time = None
         self.current_date = None
         self.show = True
@@ -25,6 +26,7 @@ class Displaytime(Thread):
         now = datetime.now()
         current_time = now.strftime("%H:%M")
         if current_time != self.current_time:
+            self.alarm.reset()
             self.current_time = current_time
             self.lcd.write_line(current_time, 1)
             current_date = now.strftime("%a %-d %b")
