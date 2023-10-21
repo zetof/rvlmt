@@ -32,9 +32,8 @@ leds = LEDS()
 
 crontab = Crontab(alarm)
 crontab.start()
-ws = WeekScheme(tue=True)
-ws.set_scheme(tue=True)
-cron1 = Cron(22, 46, ws)
+ws = WeekScheme(sat=True)
+cron1 = Cron(19, 38, ws)
 cron2 = Cron(22, 47, ws)
 cron3 = Cron(20, 54, ws)
 crontab.add_cron(cron1)
@@ -42,11 +41,10 @@ crontab.add_cron(cron2)
 crontab.add_cron(cron3)
 
 lcd.backlight_on()
-
-# Set initial second watchdog
-second_watchdog = 1
-leds_state = False
+leds.set_blink_red(True)
 
 # Main loop runs every minute
 while running:
+    leds.set_blink_green()
+    leds.set_blink_yellow()
     time.sleep(60)
