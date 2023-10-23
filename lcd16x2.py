@@ -135,14 +135,3 @@ class LCD16X2:
         
     def cleanup(self):
         GPIO.cleanup()
-
-    def write_time(self):
-        now = datetime.now()
-        current_time = now.strftime("%H:%M")
-        if current_time != self.display_time:
-            self.display_time = current_time
-            self.write_line(self.display_time, 1)
-            current_date = now.strftime("%a %-d %b")
-            if current_date != self.display_date:
-                self.display_date = current_date
-                self.write_line(self.display_date.title(), 2)

@@ -1,7 +1,3 @@
-from time import sleep
-from threading import Thread
-from datetime import datetime
-
 class WeekScheme:
     def __init__(self, sun=False, mon=False, tue=False, wed=False, thu=False, fri=False, sat=False):
         self.set_scheme(sun, mon, tue, wed, thu, fri, sat)
@@ -30,21 +26,10 @@ class Cron:
         else:
             return False
 
-class Crontab(Thread):
-    def __init__(self, alarm):
+class Crontab():
+    def __init__(self, callback=None):
+        self.callback = callback
         self.crontab = []
-        self.alarm = alarm
-        self.running = True
-        Thread.__init__(self)
-
-    def run(self):
-        while self.running:
-            if self.is_triggering():
-                self.alarm.play_midi()
-            sleep(1)
-
-    def stop(self):
-        self.running = False
 
     def add_cron(self, cron):
         self.crontab.append(cron)
@@ -52,8 +37,7 @@ class Crontab(Thread):
     def del_cron(self, index):
         self.crontab.pop(index)
 
-    def is_triggering(self):
-        now = datetime.now()
+    def is_triggering(self, now):
         for cron in self.crontab:
             if cron.matches_now(now):
                return True

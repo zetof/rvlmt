@@ -12,7 +12,7 @@ class Alarm:
         self.pid = None
 
     def set_midi_file(self, midi_file):
-        self.midi_file = midifile
+        self.midi_file = midi_file
 
     def reset(self):
         self.active = True

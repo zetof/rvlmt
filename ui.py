@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
-from threading import Thread, Timer
-from time import sleep
+from threading import Timer
 
 class PINOUT:
     GREEN = 3
@@ -8,26 +7,19 @@ class PINOUT:
     RED = 7
     SWITCH = 8
 
-class Switch(Thread):
+class Switch:
     def __init__(self, callback=None, pinout=PINOUT):
         self.switch = pinout.SWITCH
         self.callback = callback
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.switch, GPIO.IN)
-        self.running = True
-        Thread.__init__(self)
 
     def set_callback(self, callback):
         self.callback = callback
 
-    def run(self):
-        while self.running:
-            if not GPIO.input(self.switch) and self.callback:
-                self.callback()
-            sleep(.1)
-
-    def stop(self):
-        self.running = False
+    def check_callback(self):
+        if not GPIO.input(self.switch) and self.callback:
+            self.callback()
 
 class LEDS:
     def __init__(self, pinout=PINOUT):
