@@ -12,9 +12,11 @@ class Clock(Thread):
         self.seconds = ''
         self.current_time = ''
         self.show_time = True
+        self.backlight_timer = -1
         self.lcd = LCD16X2()
+        self.backlight_on()
         self.alarm = Alarm()
-        self.switch = Switch(self.alarm.stop_midi)
+        self.switch = Switch(self.backlight_on)
         self.leds = LEDS()
         ws = WeekScheme(mon=True)
         cron = Cron(20, 58, ws)
@@ -27,6 +29,7 @@ class Clock(Thread):
             now = datetime.now()
             seconds = now.strftime("%S")
             self.switch.check_callback()
+            self.check_backlight()
             if seconds != self.seconds:
                 display_time = self.get_display_time(now)
                 if display_time:
@@ -40,6 +43,24 @@ class Clock(Thread):
 
     def stop(self):
         self.running = False
+
+    def backlight_on(self, seconds=5, timed=True):
+        if self.backlight_timer == -1:
+            if timed:
+                self.backlight_timer = 10 * seconds
+            else:
+                self.backlight_timer = -1
+        self.lcd.backlight_on()
+
+    def backlight_off(self):
+        self.backlight_timer = -1
+        self.lcd.backlight_off()
+
+    def check_backlight(self):
+        if self.backlight_timer >= 0:
+            self.backlight_timer -= 1
+        if self.backlight_timer == 0:
+            self.lcd.backlight_off()
 
     def get_display_time(self, now):
         current_time = now.strftime('%H:%M')
